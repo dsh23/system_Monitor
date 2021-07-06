@@ -3,7 +3,8 @@
 
 // TODO: Return the aggregate CPU utilization
 Processor::Processor() {
-  Processor::set_Utilization(LinuxParser::CpuUtilization());
+  //do I need Processor:: here
+  set_Utilization(LinuxParser::CpuUtilization());
 }
 
 float Processor::Utilization() { return utilization; }
