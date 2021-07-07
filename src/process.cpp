@@ -39,7 +39,7 @@ string Process::Command() {
 
 // TODO: Return this process's memory utilization
 string Process::Ram() {
-  return LinuxParser::Ram(this->pid);
+  return LinuxParser::Ram(this->pid)/1000;
 }
 
 // TODO: Return the user (name) that generated this process
