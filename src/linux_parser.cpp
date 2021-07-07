@@ -181,10 +181,11 @@ string LinuxParser::Command(int pid) {
   std::string line;
   std::ifstream stream(kProcDirectory + proc + kCmdlineFilename);
   if(stream.is_open()) {
-    if(std::getline(stream, line)) {
-      return line;
+    if(!std::getline(stream, line)) {
+      return "fail";
     }
   }
+  return line;
 }
 
 // TODO: Read and return the memory used by a process
@@ -219,7 +220,8 @@ string LinuxParser::Ram(int pid) {
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Uid(int pid) {
-string kProcId = std::to_string(pid);
+  string line, key, value;
+  string kProcId = std::to_string(pid);
   std::ifstream stream(kProcDirectory + kProcId + kStatusFilename);
   while(stream.is_open()) {
     std::getline(stream, line);
@@ -238,8 +240,9 @@ string kProcId = std::to_string(pid);
 // TODO: Read and return the user associated with a process uid
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(std::string uid) {
+
   string user, shad, uid_num;
-  
+  string line;
   std::ifstream stream(kPasswordPath);
   while(stream.is_open()) {
     std::getline(stream, line);
@@ -262,7 +265,7 @@ long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
 /* pid.uptime and pid.cpuutilization both traverse the same
    file data. This utility helps cache that data to reduce load
 */
-vector<string>& LinuxParser::ProcStats(int pid) {
+vector<string> LinuxParser::ProcStats(int pid) {
   //NB. Implementation based on discussion here
   // https://stackoverflow.com/a/23376195
   string proc = std::to_string(pid);

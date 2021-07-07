@@ -52,10 +52,9 @@ namespace LinuxParser {
   std::string Command(int pid);
   std::string Ram(int pid);
   std::string Uid(int pid);
-  std::string User(int pid);
+  std::string User(std::string uid);
   long int UpTime(int pid);
   std::vector<std::string>& ProcStats(int);
-
 };  // namespace LinuxParser
 
 #endif
