@@ -7,9 +7,13 @@ provide access to these via discrete getter/setter mechanisms
 
 2. Build a stage 1 branch to incorporate only the work from the
 processor class. Then build a stage 2 branch to incorporate the work
-on the process class. Merge these into a final submission.
+on the process class. Merge these into a staging submission.
 
-3. I am _deeply_ hostile to the coding standards used in the base
-code. In particular the method naming and private member
-naming. I will reluctantly use these, but may also build branches that
-fix this.
+3. Investigate additional options and merge these where possible
+
+4. I have stored variables where it feels like wisdom to prevent
+continuous poling for constant information. Notably, if I were to
+extend this project it might be prudent to store more attributes of
+the Process class in order to facilitate extended operations. For now
+as these attributes are generally dynamic I will pass them thraight
+through to the renderer. 
