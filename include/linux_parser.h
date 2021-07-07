@@ -54,7 +54,7 @@ namespace LinuxParser {
   std::string Uid(int pid);
   std::string User(std::string uid);
   long int UpTime(int pid);
-  std::vector<std::string>& ProcStats(int);
+  std::vector<std::string> ProcStats(int);
 };  // namespace LinuxParser
 
 #endif

@@ -25,13 +25,15 @@ Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
-  if(processes_) {
-    processes_.clear();
-  }
+  processes_.clear();
+
   for(int i : LinuxParser::Pids()) {
     Process process(i);
+    processes_.push_back(process);
   }
-  return processes_; }
+  std::sort(processes_.begin(), processes_.end());
+  return processes_;
+}
 
 /* Return the system's kernel identifier (string)
    Store the string as this changes infrquently.
