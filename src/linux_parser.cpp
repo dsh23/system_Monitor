@@ -182,7 +182,7 @@ string LinuxParser::Command(int pid) {
   std::ifstream stream(kProcDirectory + proc + kCmdlineFilename);
   if(stream.is_open()) {
     if(!std::getline(stream, line)) {
-      return "fail";
+      return "No Entry in /proc/" + proc + "/cmdline\n";
     }
   }
   return line;
@@ -213,7 +213,6 @@ string LinuxParser::Ram(int pid) {
       return "0";
     }
   }
-  //std::cerr << "key = " << key << " Value = " << value << "\n";
   return value;
 }
 

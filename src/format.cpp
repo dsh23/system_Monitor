@@ -12,7 +12,7 @@ using std::string;
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
-string Format::ElapsedTime(long seconds) {
+string Format::ElapsedTime(long seconds, bool proc_win) {
  if(seconds <= 59) {
     return std::to_string(seconds) + "s";
   }
@@ -30,5 +30,10 @@ string Format::ElapsedTime(long seconds) {
 
   int secs = raw;
    
-  return std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m:"  + std::to_string(secs) + "s";
+  if(proc_win) {
+    return std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m";    
+  }
+  else {
+    return std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m:"  + std::to_string(secs) + "s";
+  }
 }
