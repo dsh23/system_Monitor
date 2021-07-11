@@ -121,25 +121,9 @@ long LinuxParser::UpTime() {
   return -1;
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
-
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
-
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
-
 // TODO: Read and return CPU utilization
-//Const?
-//vector<string>& LinuxParser::CpuUtilization() { return {}; }
 
 const vector<string> LinuxParser::CpuUtilization() {
-
   string col, line;
   vector<string> row;
   
@@ -150,7 +134,8 @@ const vector<string> LinuxParser::CpuUtilization() {
     while(linestream >> col) {
      row.push_back(col);
     } 
-   }
+  } //else: should be some error checking here
+  //return a formatted row 
   row.erase(row.begin());
   return row;
 }
