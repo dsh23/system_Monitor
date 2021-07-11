@@ -11,11 +11,27 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// DONE: An example of how to read data from the filesystem
+/* General Notes:
+ * - OO correctness: One could spend some considerable time debating the
+ *   correctness of OO code in the exercise and in the final implementation.
+ *   I ahve used what seems reasonable given time and existing code.
+ * - Errors: There are many sources of potential failures. Read or bad variable errors
+ *   are generally handled by passing a signal to the requesting method/class
+ *   and leaving the implementation to be handled there.
+ * - Jiffies seem to be an anachonism and IMO completely superfluos to this
+ *   excercise. From the number of questions regarding this topic they also seem
+ *   to be a barrier to understanding. 
+ *  
+ */
+
+
+
+
+// DONE: AN EXAMPLE OF how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
-  string line;
-  string key;
-  string value;
+  string line, key, value;
+  string os = "No OS detected";
+
   std::ifstream filestream(kOSPath);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -26,25 +42,29 @@ string LinuxParser::OperatingSystem() {
       while (linestream >> key >> value) {
         if (key == "PRETTY_NAME") {
           std::replace(value.begin(), value.end(), '_', ' ');
-          return value;
+          os = value;
+	  filestream.close();
+	  break;
         }
       }
     }
   }
-  return value;
+  return os;
 }
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, version, kernel;
-  string line;
+  string os, version, line, kernel;
+  string current_kernel = "Error";
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
-  }
-  return kernel;
+    stream.close();
+    current_kernel = kernel;
+  } 
+  return current_kernel;
 }
 
 // BONUS: Update this to use std::filesystem
@@ -81,44 +101,48 @@ int LinuxParser::TotalMem() {
   return std::stoi(value);
 }
 
-// TODO: Read and return the system memory utilization
-// change to memoryFree
+// Read and return the system memory utilization
+
 float LinuxParser::MemoryUtilization() {
-   string line;
-  string key;
-  string value;
+  string line, key, value;
+  const float error = -1.0;
+  float mem;
   std::ifstream filestream(kProcDirectory + kMeminfoFilename);
-  if (!filestream.is_open()) {
-    return -1; }
-  else {
+  if (filestream.is_open()) {
     int rows = 0;
     while (rows < 1) {
+      // move to the rwo we want to read
       std::getline(filestream, line);
       rows++;
     }
-    std::getline(filestream, line);
-    std::replace(line.begin(), line.end(), ':', ' ');
-    std::istringstream linestream(line);
-    linestream >> key >> value;
-  }
-  return std::stof(value, nullptr);
-  //float used = total - free;
-  //return ((total - free) / total);
+    if(std::getline(filestream, line)) {
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      linestream >> key >> value;
+      mem = std::stof(value);
+      filestream.close();
+    } else { mem = error; }
+  } else { mem = error; }
+
+  return mem;
 }
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() {
   string raw_time;
   string line;
+  long time = -1; // Default error value
+  
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> raw_time;
-    return std::stol(raw_time, nullptr);  
+    time = std::stol(raw_time);
+    stream.close();
   }
   // format error data in the format function: format.cpp
-  return -1;
+  return time;
 }
 
 // TODO: Read and return CPU utilization
@@ -153,8 +177,8 @@ int LinuxParser::RunningProcesses() {
     std::istringstream linestream(line);
     while (linestream >> key >> value) {
         if (key == "procs_running") {
-	  stream.close();
           procs = std::stoi(value);
+	  stream.close();
 	  break;
         }
     }
@@ -193,14 +217,14 @@ string LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       while(linestream >> key >> value) {
         if(key == "VmSize") {          
-          stream.close();
 	  result = value;
+          stream.close();
 	  break;
 	}
       }
     }
   }
-  return value;
+  return result;;
 }
 
 // TODO: Read and return the user ID associated with a process

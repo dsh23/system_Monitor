@@ -13,27 +13,34 @@ using std::string;
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
 string Format::ElapsedTime(long seconds, bool proc_win) {
- if(seconds <= 59) {
-    return std::to_string(seconds) + "s";
-  }
 
-  long raw = seconds;
+  string ts_string;
+  
+  if(seconds < 0) {
+    ts_string = "Error";
+  } else if(seconds <= 59) {
+    ts_string = std::to_string(seconds) + "s";
+  } else {
+
+    long raw = seconds;
     
-  int days = seconds / DAY;
-  raw = raw % DAY;
+    int days = seconds / DAY;
+    raw = raw % DAY;
   
-  int hours = raw / HOUR;
-  raw = raw % HOUR;
+    int hours = raw / HOUR;
+    raw = raw % HOUR;
   
-  int mins = raw / MIN;
-  raw = raw % MIN;
+    int mins = raw / MIN;
+    raw = raw % MIN;
 
-  int secs = raw;
+    int secs = raw;
    
-  if(proc_win) {
-    return std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m";    
+    if(proc_win) {
+      ts_string = std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m";    
+    }
+    else {
+      ts_string = std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m:"  + std::to_string(secs) + "s";
+    }
   }
-  else {
-    return std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m:"  + std::to_string(secs) + "s";
-  }
+  return ts_string;
 }
