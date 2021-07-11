@@ -78,7 +78,7 @@ int LinuxParser::TotalMem() {
     std::istringstream linestream(line);
     linestream >> key >> value;
   }
-  return std::stoi(value, nullptr);
+  return std::stoi(value);
 }
 
 // TODO: Read and return the system memory utilization
@@ -138,7 +138,7 @@ long LinuxParser::IdleJiffies() { return 0; }
 //Const?
 //vector<string>& LinuxParser::CpuUtilization() { return {}; }
 
-vector<string> LinuxParser::CpuUtilization() {
+const vector<string> LinuxParser::CpuUtilization() {
 
   string col, line;
   vector<string> row;
@@ -160,18 +160,21 @@ int LinuxParser::TotalProcesses() { return 0; }
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   string line, key, value;
+  int procs = -1; //Default value in case of failure
 
   std::ifstream stream(kProcDirectory + kStatFilename);
   while(stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     while (linestream >> key >> value) {
-        if (key == "procs_running") {          
-          return std::stoi(value, nullptr);
+        if (key == "procs_running") {
+	  stream.close();
+          procs = std::stoi(value);
+	  break;
         }
     }
   }
-  return -1;
+  return procs;
 }
 
 // TODO: Read and return the command associated with a process
@@ -182,18 +185,20 @@ string LinuxParser::Command(int pid) {
   std::ifstream stream(kProcDirectory + proc + kCmdlineFilename);
   if(stream.is_open()) {
     if(!std::getline(stream, line)) {
-      return "No Entry in /proc/" + proc + "/cmdline\n";
+      // Under some curcumstances this can be empty
+      line = "No entry in /proc/" + proc + "/cmdline\n";
     }
   }
   return line;
 }
 
 // TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
+
 string LinuxParser::Ram(int pid) {
-  std::string key;
-  std::string value;
-  std::string line;
+  // VmSize not allways recorded for a process e.g. see:
+  // https://unix.stackexchange.com/questions/500212/
+  std::string result = "0"; // fallback for above
+  std::string key, value, line;
   std::string proc = std::to_string(pid);
 
   std::ifstream stream(kProcDirectory + proc + kStatusFilename);
@@ -202,15 +207,12 @@ string LinuxParser::Ram(int pid) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
       while(linestream >> key >> value) {
-	//std::cerr << "key = " << key << " Value = " << value << "\n";
         if(key == "VmSize") {          
           stream.close();
+	  result = value;
 	  break;
 	}
       }
-    }
-    else {
-      return "0";
     }
   }
   return value;

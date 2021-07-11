@@ -32,14 +32,19 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   int row{0};
   mvwprintw(window, ++row, 2, ("OS: " + system.OperatingSystem()).c_str());
   mvwprintw(window, ++row, 2, ("Kernel: " + system.Kernel()).c_str());
-  mvwprintw(window, ++row, 2, "CPU: ");
+  mvwprintw(window, ++row, 2, "Total CPU: ");
   wattron(window, COLOR_PAIR(1));
-  mvwprintw(window, row, 10, "");
-  wprintw(window, ProgressBar(system.Cpu().Utilization()).c_str());
+  mvwprintw(window, row, 12, "");
+  wprintw(window, ProgressBar(system.Cpu().Utilization().lifetime).c_str());
+  wattroff(window, COLOR_PAIR(1));
+  mvwprintw(window, ++row, 2, "Cur. CPU: ");
+  wattron(window, COLOR_PAIR(1));
+  mvwprintw(window, row, 12, "");
+  wprintw(window, ProgressBar(system.Cpu().Utilization().current).c_str());
   wattroff(window, COLOR_PAIR(1));
   mvwprintw(window, ++row, 2, "Memory: ");
   wattron(window, COLOR_PAIR(1));
-  mvwprintw(window, row, 10, "");
+  mvwprintw(window, row, 12, "");
   wprintw(window, ProgressBar(system.MemoryUtilization()).c_str());
   wattroff(window, COLOR_PAIR(1));
   mvwprintw(window, ++row, 2,
@@ -90,7 +95,7 @@ void NCursesDisplay::Display(System& system, int n) {
   start_color();  // enable color
 
   int x_max{getmaxx(stdscr)};
-  WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
+  WINDOW* system_window = newwin(10, x_max - 1, 0, 0);
   WINDOW* process_window =
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
 

@@ -42,7 +42,9 @@ namespace LinuxParser {
     kGuestNice_
     };
   */
-  std::vector<std::string> CpuUtilization();
+  const std::vector<std::string> CpuUtilization();
+  // Jiffies just not needed and probably more confusing to your students.
+  // consult man (5) proc
   long Jiffies();
   long ActiveJiffies();
   long ActiveJiffies(int pid);

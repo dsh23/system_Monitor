@@ -39,12 +39,21 @@ string Process::Command() {
 
 // TODO: Return this process's memory utilization
 string Process::Ram() {
-  long mem = std::stol(LinuxParser::Ram(this->pid));
-  mem = mem/1000;
-  return std::to_string(mem);
+  const int mbyte = 1024; 
+  int  raw_mem = std::stoi(LinuxParser::Ram(this->pid));
+  int mb_mem;
+  int kb_mem;
+  
+  mb_mem = raw_mem / mbyte;
+  kb_mem = raw_mem % mbyte;
+  // basic precision limit, this could be done with sstream
+  // and precision() but that seems heavy?
+  kb_mem = (kb_mem / static_cast<float> (mbyte)) * 1000;
+
+  return std::to_string(mb_mem) + "." + std::to_string(kb_mem);
 }
 
-// TODO: Return the user (name) that generated this process
+// TODO: Return the user (name) that generated this proces
 string Process::User() {
   return LinuxParser::User(LinuxParser::Uid(this->pid));
 }

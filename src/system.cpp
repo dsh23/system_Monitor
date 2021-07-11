@@ -21,7 +21,9 @@ System::System() {
 } 
 
 // TODO: Return the system's CPU
-Processor& System::Cpu() { return cpu_; }
+Processor& System::Cpu() {
+  return cpu_;
+}
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
@@ -48,11 +50,18 @@ std::string System::Kernel() {
   return knl;
 }
 
-void System::set_Kernel(std::string k_string) {
+void System::set_Kernel(const std::string k_string) {
   knl = k_string;
 }
 
-void System::set_TotalMem(int total) {
+int System::TotalMem() {
+  if(total_mem == 0) {
+    set_TotalMem(LinuxParser::TotalMem());
+  }
+  return total_mem;
+}
+
+void System::set_TotalMem(const int total) {
   total_mem = total;
 }
   
@@ -74,7 +83,7 @@ std::string System::OperatingSystem() {
     return os;
 }
 
-void System::set_OperatingSytem(std::string os_string) {
+void System::set_OperatingSytem(const std::string os_string) {
   os = os_string;
 }
 
