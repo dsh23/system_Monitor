@@ -111,7 +111,7 @@ float LinuxParser::MemoryUtilization() {
   if (filestream.is_open()) {
     int rows = 0;
     while (rows < 1) {
-      // move to the rwo we want to read
+      // move to the second row
       std::getline(filestream, line);
       rows++;
     }
@@ -122,7 +122,7 @@ float LinuxParser::MemoryUtilization() {
       mem = std::stof(value);
       filestream.close();
     } else { mem = error; }
-  } else { mem = error; }
+  } else { mem = error; } //1
 
   return mem;
 }
@@ -191,14 +191,14 @@ int LinuxParser::RunningProcesses() {
 string LinuxParser::Command(int pid) {
   std::string proc = std::to_string(pid);
   std::string line;
+  std::string command = "No entry in /proc/" + proc + "/cmdline";
   std::ifstream stream(kProcDirectory + proc + kCmdlineFilename);
   if(stream.is_open()) {
-    if(!std::getline(stream, line)) {
-      // Under some curcumstances this can be empty
-      line = "No entry in /proc/" + proc + "/cmdline\n";
+    if(std::getline(stream, line)) {
+      command = line;
     }
   }
-  return line;
+  return command;
 }
 
 // TODO: Read and return the memory used by a process
