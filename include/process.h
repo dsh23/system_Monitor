@@ -10,20 +10,32 @@ It contains relevant attributes as shown below
 */
 class Process {
  public:
+  enum proc_state {
+    dead = 0,
+    alive = 1
+  };
+  
   Process(int i);
-  int Pid();                               // TODO: See src/process.cpp
-  std::string User();                      // TODO: See src/process.cpp
-  std::string Command();                   // TODO: See src/process.cpp
-  float CpuUtilization() const;            // TODO: See src/process.cpp
-  std::string Ram();                       // TODO: See src/process.cpp
-  long int UpTime();                       // TODO: See src/process.cpp
-  bool operator<(Process const& a) const;  // TODO: See src/process.cpp
+  int Pid() const;     
+  std::string User();
+  //void set_User();
+  std::string Command();
+  float CpuUtilization() const;
+  std::string Ram();
+  long int UpTime();
+  proc_state Status();
+  void set_Status(proc_state);
+  void set_Data();
+  bool operator<(Process const& a) const;
+  bool operator==(Process const& a) const;
 
-  // TODO: Declare any necessary private members
  private:
   int pid;
-  long proc_time;
+  long uptime;
+  std::string user;
+  std::string command;
   std::vector<std::string> stat_data;
+  proc_state status = alive;
 };
 
 #endif

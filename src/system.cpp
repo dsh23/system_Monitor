@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "process.h"
 #include "processor.h"
@@ -27,11 +28,28 @@ Processor& System::Cpu() {
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
-  processes_.clear();
-
-  for(int i : LinuxParser::Pids()) {
-    Process process(i);
-    processes_.push_back(process);
+  //a map is waay more suitable here
+  //processes_.clear();
+  // mark all process as dead
+  for(auto i : processes_) {
+    i.set_Status(Process::proc_state::dead);
+  }
+  for(int pid : LinuxParser::Pids()) {
+    std::vector<Process>::iterator it;
+    it = std::find(processes_.begin(), processes_.end(), Process(pid));
+    if(it != processes_.end()) {
+      it->set_Data();     
+    }
+    else {
+      Process process(pid);
+      processes_.push_back(process);
+    }
+  }
+  //prune processes
+  for(int i = 0; i < static_cast<int>(processes_.size()); i++) {
+    if(processes_[i].Status() == Process::proc_state::dead) {
+      processes_.erase(processes_.begin() + i);
+    }
   }
   std::sort(processes_.begin(), processes_.end());
   return processes_;
