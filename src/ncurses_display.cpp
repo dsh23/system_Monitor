@@ -74,6 +74,8 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   mvwprintw(window, row, time_column, "TIME+");
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
+
+  // NB. n = 10 as defined in nucrses.h contols number of procs and window height
   int const num_processes = int(processes.size()) > n ? n : processes.size();
   for (int i = 0; i < num_processes; ++i) {
     mvwprintw(window, ++row, pid_column, to_string(processes[i].Pid()).c_str());
@@ -111,7 +113,7 @@ void NCursesDisplay::Display(System& system, int n) {
     refresh();
     werase(system_window);
     werase(process_window);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
   }
   endwin();
 }

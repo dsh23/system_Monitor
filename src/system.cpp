@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include "process.h"
 #include "processor.h"
@@ -16,7 +17,7 @@ using std::string;
 using std::vector;
 
 System::System() {
-  set_OperatingSytem(LinuxParser::OperatingSystem());
+  set_OperatingSystem(LinuxParser::OperatingSystem());
   set_Kernel(LinuxParser::Kernel());
   set_TotalMem(LinuxParser::TotalMem());
 } 
@@ -26,31 +27,62 @@ Processor& System::Cpu() {
   return cpu_;
 }
 
-// TODO: Return a container composed of the system's processes
+/* Return a container composed of the system's processes
+ * Very basic and ugly implementation
+ * a map or alternative data structure may be more suitable here
+ * Todo: If we know we will only display 10 processes can we optimise?
+ * at the least just return a slice to the caller
+ */
 vector<Process>& System::Processes() {
-  //a map is waay more suitable here
-  //processes_.clear();
-  // mark all process as dead
-  for(auto i : processes_) {
-    i.set_Status(Process::proc_state::dead);
-  }
-  for(int pid : LinuxParser::Pids()) {
-    std::vector<Process>::iterator it;
-    it = std::find(processes_.begin(), processes_.end(), Process(pid));
-    if(it != processes_.end()) {
-      it->set_Data();     
-    }
-    else {
+
+  int count = 0;
+  if(processes_.empty()) {   // Build the initial list
+    for(int pid : LinuxParser::Pids()) {
       Process process(pid);
       processes_.push_back(process);
     }
   }
+  else {  // Mark all processes as old
+    for(auto& i : processes_) {
+      i.set_Status(false); // go back to enum
+    }    
+    for(int pid : LinuxParser::Pids()) { //maintain list of *active* processes
+      //
+      std::vector<Process>::iterator it = std::find(processes_.begin(), processes_.end(), Process(pid));
+      if(it != processes_.end()) {
+	it->set_Data();
+	count++;
+	//std::cout << "Found pid: " << it->Pid() << ",  " << it->Status();
+      } 
+      else {
+	//add new processes
+	Process process(pid);
+	//std::cout << "Creating new process entry: " << process.Pid() << " " << process.Command() << "\n";
+	
+	processes_.push_back(process);
+      }
+    }
+    //std::cout << "proc count: " << count << " Expired: " << expired.size() << "\n";
+  }
+
   //prune processes
+  //std::cout << "Processes_.size(): " << processes_.size() <<  "\n";
+
   for(int i = 0; i < static_cast<int>(processes_.size()); i++) {
-    if(processes_[i].Status() == Process::proc_state::dead) {
-      processes_.erase(processes_.begin() + i);
+    //std::cout << processes_[i].Pid() << " = " << processes_[i].Status() << "\n";
+    if(processes_[i].Status() == false) {
+      //std::cout << "\npruning process:" << processes_[i].Pid();
+      processes_.erase(processes_.begin() + i);	
     }
   }
+
+  //  for(auto k : processes_) {
+  //if(k.Status() == Process::proc_state::dead) {
+  //  processes_.erase(k);
+    
+  
+  
+  //std::cout << "\n";
   std::sort(processes_.begin(), processes_.end());
   return processes_;
 }

@@ -23,7 +23,7 @@ class System {
   // TODO: Define any necessary private members
  private:
   void set_Kernel(const std::string);
-  void set_OperatingSytem(const std::string);
+  void set_OperatingSystem(const std::string);
   void set_TotalMem(const int);
   
   Processor cpu_;

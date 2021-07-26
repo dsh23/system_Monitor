@@ -19,11 +19,11 @@ const Processor::UtilData& Processor::Utilization() {
     https://stackoverflow.com/a/23376195
 */
 void Processor::set_Utilization(const std::vector<std::string> u_stats) {
-  std::ofstream myfile;
+/*  std::ofstream myfile;
   myfile.open("./build/processor.txt", std::ofstream::app);
   myfile << std::to_string(util_data.old_work) + ", " +  std::to_string(util_data.old_idle) + "\n";
   myfile.close();
-  
+*/  
   
   long idle = std::stol(u_stats[kIdle_]) + std::stol(u_stats[kIOwait_]);
   long work  = std::stol(u_stats[kUser_]) + std::stol(u_stats[kNice_]) + std::stol(u_stats[kSystem_]) + std::stol(u_stats[kIRQ_]) + std::stol(u_stats[kSoftIRQ_]) + std::stol(u_stats[kSteal_]);

@@ -84,6 +84,7 @@ vector<int> LinuxParser::Pids() {
     }
   }
   closedir(directory);
+  std::cout << "Pid size:" << pids.size();
   return pids;
 }
 
@@ -211,6 +212,7 @@ string LinuxParser::Ram(int pid) {
   std::string proc = std::to_string(pid);
 
   std::ifstream stream(kProcDirectory + proc + kStatusFilename);
+  //while(file_input.peek()!=EOF) {
   while(stream.is_open()) {
     if(std::getline(stream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
@@ -222,6 +224,9 @@ string LinuxParser::Ram(int pid) {
 	  break;
 	}
       }
+    } else {
+      stream.close();
+      break;
     }
   }
   return result;;
