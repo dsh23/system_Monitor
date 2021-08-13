@@ -113,7 +113,7 @@ void NCursesDisplay::Display(System& system, int n) {
     refresh();
     werase(system_window);
     werase(process_window);
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   endwin();
 }

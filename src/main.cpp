@@ -1,6 +1,5 @@
 #include "ncurses_display.h"
 #include "system.h"
-//Test harness
 #include <string>
 #include <chrono>
 #include "format.h"
@@ -9,9 +8,14 @@
 using namespace::std;
 
 int main() {
-  //int n = 10;
+
   System system;
-  /*    for(int i =0; i < 100; i++) {
+
+  /*  
+  //Test harness
+
+  int n = 10;
+  for(int i =0; i < 100; i++) {
   //test harness;
   string os = system.OperatingSystem();
   string kern = system.Kernel();
@@ -35,6 +39,8 @@ int main() {
   
   std::this_thread::sleep_for(std::chrono::seconds(3));
   }
+  
   */
+  
   NCursesDisplay::Display(system);
 }

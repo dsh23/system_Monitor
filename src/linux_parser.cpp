@@ -25,8 +25,6 @@ using std::vector;
  */
 
 
-
-
 // DONE: AN EXAMPLE OF how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line, key, value;
@@ -84,7 +82,6 @@ vector<int> LinuxParser::Pids() {
     }
   }
   closedir(directory);
-  std::cout << "Pid size:" << pids.size();
   return pids;
 }
 

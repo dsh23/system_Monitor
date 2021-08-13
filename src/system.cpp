@@ -37,52 +37,37 @@ vector<Process>& System::Processes() {
 
   int count = 0;
   if(processes_.empty()) {   // Build the initial list
-    for(int pid : LinuxParser::Pids()) {
+    for(auto pid : LinuxParser::Pids()) {
       Process process(pid);
       processes_.push_back(process);
     }
   }
   else {  // Mark all processes as old
     for(auto& i : processes_) {
-      i.set_Status(false); // go back to enum
-    }    
-    for(int pid : LinuxParser::Pids()) { //maintain list of *active* processes
-      //
-      std::vector<Process>::iterator it = std::find(processes_.begin(), processes_.end(), Process(pid));
-      if(it != processes_.end()) {
-	it->set_Data();
-	count++;
-	//std::cout << "Found pid: " << it->Pid() << ",  " << it->Status();
-      } 
-      else {
-	//add new processes
-	Process process(pid);
-	//std::cout << "Creating new process entry: " << process.Pid() << " " << process.Command() << "\n";
-	
-	processes_.push_back(process);
-      }
+      i.set_Status(Process::dead);
     }
-    //std::cout << "proc count: " << count << " Expired: " << expired.size() << "\n";
   }
 
-  //prune processes
-  //std::cout << "Processes_.size(): " << processes_.size() <<  "\n";
+  for(int pid : LinuxParser::Pids()) { //maintain list of *active* processes
+    //
+    std::vector<Process>::iterator it = std::find(processes_.begin(), processes_.end(), Process(pid));
+    if(it != processes_.end()) {
+      it->set_Data();
+      count++;
+    } 
+    else { //add new processes
+      Process process(pid);
+      processes_.push_back(process);
+    }
+  }
 
+  // prune dead processes
   for(int i = 0; i < static_cast<int>(processes_.size()); i++) {
-    //std::cout << processes_[i].Pid() << " = " << processes_[i].Status() << "\n";
-    if(processes_[i].Status() == false) {
-      //std::cout << "\npruning process:" << processes_[i].Pid();
+    if(processes_[i].Status() == Process::dead) {
       processes_.erase(processes_.begin() + i);	
     }
   }
 
-  //  for(auto k : processes_) {
-  //if(k.Status() == Process::proc_state::dead) {
-  //  processes_.erase(k);
-    
-  
-  
-  //std::cout << "\n";
   std::sort(processes_.begin(), processes_.end());
   return processes_;
 }
@@ -128,12 +113,12 @@ float System::MemoryUtilization() {
 */
 std::string System::OperatingSystem() {
   if(os.empty()) {
-    set_OperatingSytem(LinuxParser::OperatingSystem());
+    set_OperatingSystem(LinuxParser::OperatingSystem());
   }
     return os;
 }
 
-void System::set_OperatingSytem(const std::string os_string) {
+void System::set_OperatingSystem(const std::string os_string) {
   os = os_string;
 }
 
