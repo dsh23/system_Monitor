@@ -14,7 +14,7 @@ using std::vector;
 /* General Notes:
  * - OO correctness: One could spend some considerable time debating the
  *   correctness of OO code in the exercise and in the final implementation.
- *   I ahve used what seems reasonable given time and existing code.
+ *   I have used what seems reasonable given time and existing code.
  * - Errors: There are many sources of potential failures. Read or bad variable errors
  *   are generally handled by passing a signal to the requesting method/class
  *   and leaving the implementation to be handled there.
@@ -270,9 +270,10 @@ string LinuxParser::User(std::string uid) {
   return user;
 }
 
-// TODO: Read and return the uptime of a process
+// RREDUNDANT: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+// long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+
 
 /* pid.uptime and pid.cpuutilization both traverse the same
    file data. This utility helps cache that data to reduce load

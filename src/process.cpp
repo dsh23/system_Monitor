@@ -26,7 +26,7 @@ int Process::Pid() const { return pid; }
 void Process::set_Data() {
   stat_data = LinuxParser::ProcStats(this->pid);
   uptime = LinuxParser::UpTime();
-  set_CpuUtilization();
+  set_CpuUtilization(); // 1st call
   status = Process::alive;
 }
 
@@ -37,7 +37,7 @@ float Process::CpuUtilization() { //const {
 
 void Process::set_CpuUtilization() {
   float process_current;
-  float hertz = sysconf(_SC_CLK_TCK);
+  float hertz = sysconf(_SC_CLK_TCK); // Make static
   float seconds = uptime - (std::stol(stat_data[21]) / hertz);
   int seconds_delta = uptime - old_uptime;
   long proc_time = 0;
@@ -46,16 +46,21 @@ void Process::set_CpuUtilization() {
   for(int i = 13; i < 17; i++) {
     proc_time += std::stol(stat_data[i]);
   }
-  
+
+  //  std::cout << "pid: " << pid << ", proc_time: " << proc_time << ", old_proc: " << old_proc_time << std::endl;
+
   int proc_delta = proc_time - old_proc_time;
-  if(proc_delta == 0) {
+
+  if(proc_delta == 0) {  // No processing has occured
     process_current = 0;
   }
   else {
     if(old_uptime == 0) { //insufficeint time shift or error
-      process_current = ((proc_time / hertz) / static_cast<float> (seconds));
+      process_current = ((static_cast<float>(proc_time) / hertz) / static_cast<float> (seconds));
     } else {
-      process_current = ((proc_delta / hertz) / static_cast<float> (seconds_delta));
+      process_current = ((static_cast<float>(proc_delta) / hertz) / static_cast<float> (seconds_delta));
+      //      std::cout << "procdelta, hertz, / , sec_delta  ";
+      //std::cout << proc_delta << ", " << hertz << ", " << static_cast<float> (seconds_delta) << ", " << process_current << std::endl;
     }
   }
   

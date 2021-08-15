@@ -38,36 +38,36 @@ vector<Process>& System::Processes() {
   int count = 0;
   if(processes_.empty()) {   // Build the initial list
     for(auto pid : LinuxParser::Pids()) {
+      //std::cout << "Instantiation of process. calling CpuUtilisation\n";
       Process process(pid);
       processes_.push_back(process);
+      
     }
   }
   else {  // Mark all processes as old
     for(auto& i : processes_) {
       i.set_Status(Process::dead);
     }
-  }
-
-  for(int pid : LinuxParser::Pids()) { //maintain list of *active* processes
-    //
-    std::vector<Process>::iterator it = std::find(processes_.begin(), processes_.end(), Process(pid));
-    if(it != processes_.end()) {
-      it->set_Data();
-      count++;
-    } 
-    else { //add new processes
-      Process process(pid);
-      processes_.push_back(process);
+    for(int pid : LinuxParser::Pids()) { //maintain list of *active* processes
+      std::vector<Process>::iterator it = std::find(processes_.begin(), processes_.end(), Process(pid)); //call set_Data. Shouldnt matter as it is discarded
+      if(it != processes_.end()) {
+	it->set_Data();
+	//std::cout << "Instantiation of alt process. calling CpuUtilisation\n";
+	count++;
+      } 
+      else { //add new processes
+	Process process(pid);
+	//std::cout << "Instantiation of new process. calling CpuUtilisation\n";
+	processes_.push_back(process);
+      }
+    }
+    // prune dead processes
+    for(int i = 0; i < static_cast<int>(processes_.size()); i++) {
+      if(processes_[i].Status() == Process::dead) {
+	processes_.erase(processes_.begin() + i);	
+      }
     }
   }
-
-  // prune dead processes
-  for(int i = 0; i < static_cast<int>(processes_.size()); i++) {
-    if(processes_[i].Status() == Process::dead) {
-      processes_.erase(processes_.begin() + i);	
-    }
-  }
-
   std::sort(processes_.begin(), processes_.end());
   return processes_;
 }
