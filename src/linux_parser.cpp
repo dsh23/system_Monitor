@@ -23,6 +23,9 @@ using std::vector;
  *  
  */
 
+// NB. this branch does not include the updated pid harvester bonus code
+// LinuxParser::PID() see release_1.1 for that
+
 
 // DONE: AN EXAMPLE OF how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
