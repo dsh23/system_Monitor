@@ -47,8 +47,6 @@ void Process::set_CpuUtilization() {
     proc_time += std::stol(stat_data[i]);
   }
 
-  //  std::cout << "pid: " << pid << ", proc_time: " << proc_time << ", old_proc: " << old_proc_time << std::endl;
-
   int proc_delta = proc_time - old_proc_time;
 
   if(proc_delta == 0) {  // No processing has occured
@@ -59,8 +57,6 @@ void Process::set_CpuUtilization() {
       process_current = ((static_cast<float>(proc_time) / hertz) / static_cast<float> (seconds));
     } else {
       process_current = ((static_cast<float>(proc_delta) / hertz) / static_cast<float> (seconds_delta));
-      //      std::cout << "procdelta, hertz, / , sec_delta  ";
-      //std::cout << proc_delta << ", " << hertz << ", " << static_cast<float> (seconds_delta) << ", " << process_current << std::endl;
     }
   }
   
@@ -80,10 +76,9 @@ std::string Process::Command() {
 string Process::Ram() {
   const int mbyte = 1024; 
   int  raw_mem = std::stoi(LinuxParser::Ram(this->pid));
-  int mb_mem, kb_mem;
   
-  mb_mem = raw_mem / mbyte;
-  kb_mem = raw_mem % mbyte;
+  int mb_mem = raw_mem / mbyte;
+  int kb_mem = raw_mem % mbyte;
   // basic precision limit, this could be done with sstream
   // and precision() but that seems heavy?
   kb_mem = (kb_mem / static_cast<float> (mbyte)) * 1000;
@@ -113,6 +108,7 @@ void Process::set_Status(Process::proc_state ps) {
 bool Process::operator<(Process const& a) const {
   return this->proc_utilization > a.proc_utilization;
 }
+
 // Comparator predicate
 bool Process::operator==(Process const& a) const {
   return this->Pid() == a.Pid();

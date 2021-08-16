@@ -28,7 +28,8 @@ namespace LinuxParser {
   std::string OperatingSystem();
   std::string Kernel();
 
-  /*CPU //use? where?
+  /*CPU //use? where? Implemented in processor.h, not needed here
+
     enum CPUStates {
     kUser_ = 0,
     kNice_,
@@ -42,13 +43,15 @@ namespace LinuxParser {
     kGuestNice_
     };
   */
+  
   const std::vector<std::string> CpuUtilization();
+
   // Jiffies just not needed and probably more confusing to your students.
   // consult man (5) proc
-  long Jiffies();
-  long ActiveJiffies();
-  long ActiveJiffies(int pid);
-  long IdleJiffies();
+  // long Jiffies();
+  // long ActiveJiffies();
+  // long ActiveJiffies(int pid);
+  // long IdleJiffies();
 
   // Processes
   std::string Command(int pid);

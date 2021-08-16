@@ -10,7 +10,7 @@ It contains relevant attributes as shown below
 */
 class Process {
  public:
-  enum proc_state {
+  enum proc_state { // track process state between window refresh
     dead = 0,
     alive = 1
   };
@@ -18,7 +18,6 @@ class Process {
   Process(int i);
   int Pid() const;     
   std::string User();
-  //void set_User();
   std::string Command();
   float CpuUtilization(); //const;
   void set_CpuUtilization();

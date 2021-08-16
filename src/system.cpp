@@ -22,7 +22,7 @@ System::System() {
   set_TotalMem(LinuxParser::TotalMem());
 } 
 
-// TODO: Return the system's CPU
+// Done: Return the system's CPU
 Processor& System::Cpu() {
   return cpu_;
 }
@@ -30,8 +30,8 @@ Processor& System::Cpu() {
 /* Return a container composed of the system's processes
  * Very basic and ugly implementation
  * a map or alternative data structure may be more suitable here
- * Todo: If we know we will only display 10 processes can we optimise?
- * at the least just return a slice to the caller
+ * Todo: If we know we will only display 10 processes can we optimise
+ * prior to the display functions
  */
 vector<Process>& System::Processes() {
 
@@ -41,7 +41,6 @@ vector<Process>& System::Processes() {
       //std::cout << "Instantiation of process. calling CpuUtilisation\n";
       Process process(pid);
       processes_.push_back(process);
-      
     }
   }
   else {  // Mark all processes as old
@@ -52,12 +51,10 @@ vector<Process>& System::Processes() {
       std::vector<Process>::iterator it = std::find(processes_.begin(), processes_.end(), Process(pid)); //call set_Data. Shouldnt matter as it is discarded
       if(it != processes_.end()) {
 	it->set_Data();
-	//std::cout << "Instantiation of alt process. calling CpuUtilisation\n";
 	count++;
       } 
       else { //add new processes
 	Process process(pid);
-	//std::cout << "Instantiation of new process. calling CpuUtilisation\n";
 	processes_.push_back(process);
       }
     }
@@ -100,7 +97,7 @@ void System::set_TotalMem(const int total) {
   total_mem = total;
 }
   
-// TODO: Return the system's memory utilization
+// Done: Return the system's memory utilization
 float System::MemoryUtilization() {
   return (total_mem - LinuxParser::MemoryUtilization()) / total_mem;
 }
@@ -122,17 +119,17 @@ void System::set_OperatingSystem(const std::string os_string) {
   os = os_string;
 }
 
-// TODO: Return the number of processes actively running on the system
+// Done: Return the number of processes actively running on the system
 int System::RunningProcesses() {
   return LinuxParser::RunningProcesses();
 }
 
-// TODO: Return the total number of processes on the system
+// Done: Return the total number of processes on the system
 int System::TotalProcesses() {
   return static_cast<int>(LinuxParser::Pids().size());
 }
 
-// TODO: Return the number of seconds since the system started running
+// Done: Return the number of seconds since the system started running
 long int System::UpTime() {
   return LinuxParser::UpTime(); 
 }

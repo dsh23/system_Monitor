@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
 #include "linux_parser.h"
 
 using std::stof;
@@ -66,6 +65,7 @@ string LinuxParser::Kernel() {
 }
 
 // BONUS: Update this to use std::filesystem
+// See separate branch for the alternative implementation
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
   DIR* directory = opendir(kProcDirectory.c_str());
@@ -99,8 +99,7 @@ int LinuxParser::TotalMem() {
   return std::stoi(value);
 }
 
-// Read and return the system memory utilization
-
+// Done: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
   string line, key, value;
   const float error = -1.0;
@@ -109,7 +108,6 @@ float LinuxParser::MemoryUtilization() {
   if (filestream.is_open()) {
     int rows = 0;
     while (rows < 1) {
-      // move to the second row
       std::getline(filestream, line);
       rows++;
     }
@@ -125,7 +123,7 @@ float LinuxParser::MemoryUtilization() {
   return mem;
 }
 
-// TODO: Read and return the system uptime
+// Done: Read and return the system uptime
 long LinuxParser::UpTime() {
   string raw_time;
   string line;
@@ -139,12 +137,10 @@ long LinuxParser::UpTime() {
     time = std::stol(raw_time);
     stream.close();
   }
-  // format error data in the format function: format.cpp
   return time;
 }
 
-// TODO: Read and return CPU utilization
-
+// Done: Read and return CPU utilization
 const vector<string> LinuxParser::CpuUtilization() {
   string col, line;
   vector<string> row;
@@ -161,10 +157,10 @@ const vector<string> LinuxParser::CpuUtilization() {
   row.erase(row.begin());
   return row;
 }
-// TODO: Read and return the total number of processes
+// Done: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { return 0; }
 
-// TODO: Read and return the number of running processes
+// Done: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   string line, key, value;
   int procs = -1; //Default value in case of failure
@@ -184,8 +180,7 @@ int LinuxParser::RunningProcesses() {
   return procs;
 }
 
-// TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
+// Done: Read and return the command associated with a process
 string LinuxParser::Command(int pid) {
   std::string proc = std::to_string(pid);
   std::string line;
@@ -199,17 +194,16 @@ string LinuxParser::Command(int pid) {
   return command;
 }
 
-// TODO: Read and return the memory used by a process
-
+// Done: Read and return the memory used by a process
 string LinuxParser::Ram(int pid) {
   // VmSize not allways recorded for a process e.g. see:
   // https://unix.stackexchange.com/questions/500212/
+  // Similar effects observed in quemu/kvm/libvirt vms
   std::string result = "0"; // fallback for above
   std::string key, value, line;
   std::string proc = std::to_string(pid);
 
   std::ifstream stream(kProcDirectory + proc + kStatusFilename);
-  //while(file_input.peek()!=EOF) {
   while(stream.is_open()) {
     if(std::getline(stream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
@@ -229,8 +223,7 @@ string LinuxParser::Ram(int pid) {
   return result;;
 }
 
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
+// Done: Read and return the user ID associated with a process
 string LinuxParser::Uid(int pid) {
   string line, key, value;
   string kProcId = std::to_string(pid);
@@ -249,8 +242,7 @@ string LinuxParser::Uid(int pid) {
   return value;
 }
 
-// TODO: Read and return the user associated with a process uid
-// REMOVE: [[maybe_unused]] once you define the function
+// Done: Read and return the user associated with a process uid
 string LinuxParser::User(std::string uid) {
 
   string user, shad, uid_num;
@@ -270,7 +262,7 @@ string LinuxParser::User(std::string uid) {
   return user;
 }
 
-// RREDUNDANT: Read and return the uptime of a process
+// REDUNDANT: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 // long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
 

@@ -17,3 +17,7 @@ extend this project it might be prudent to store more attributes of
 the Process class in order to facilitate extended operations. For now
 as these attributes are generally dynamic I will pass them thraight
 through to the renderer. 
+
+5. Much of my ideas changed over time. Particularly as I tried to be accurate with
+the results and began to debug the results of various implementations
+that were taking too much time.

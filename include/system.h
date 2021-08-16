@@ -20,7 +20,7 @@ class System {
   std::string OperatingSystem();
   int TotalMem();
 
-  // TODO: Define any necessary private members
+  // Done: Define any necessary private members
  private:
   void set_Kernel(const std::string);
   void set_OperatingSystem(const std::string);

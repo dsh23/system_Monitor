@@ -17,21 +17,29 @@ using namespace::std;
 int main() {
 
   System system;
+  NCursesDisplay::Display(system);
 
-  //Test harness
   /*
+  // Test harness
+  // Comment out NCursesDisplay...
+  // NB. Build systems load with e.g. 
+  // firefox-esr --display=:0 https://youtu.be/K1QICrgxTjA &
+
   int n = 10;
   for(int i =0; i < 5; i++) {
   //test harness;
     string os = system.OperatingSystem();
     string kern = system.Kernel();
-    float current_cpu =  system.Cpu().Utilization().current;
+    std::vector<float> util = system.Cpu().Utilization();
+    float life_cpu = util[0];
+    float current_cpu =  util[1];
     float mem = system.MemoryUtilization();
     int t_procs = system.TotalProcesses();
     int r_procs = system.RunningProcesses();
     string uptime = Format::ElapsedTime(system.UpTime(), false);
     //  cout << os << "  " << kern << "  " << uptime << endl;
-    //  cout << current_cpu << "  " << mem << "  " << t_procs << "  " << r_procs << endl;
+    cout << life_cpu << " " << current_cpu << "  " << mem << "  " << t_procs << "  " << r_procs << endl;
+
     
     vector<Process>& processes = system.Processes();
     int const num_processes = int(processes.size()) > n ? n : processes.size();
@@ -40,13 +48,12 @@ int main() {
       string user = processes[i].User();
       float cpu = processes[i].CpuUtilization() * 100;
       string ram = processes[i].Ram();
-      cout << pid << "  " << user << "  " << cpu << endl;
+      //  cout << pid << "  " << user << "  " << cpu << endl;
     }
     
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
+
   */
   
-  
-  NCursesDisplay::Display(system);
 }

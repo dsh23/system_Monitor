@@ -3,7 +3,8 @@
 #include <string>
 #include <thread>
 #include <vector>
-
+#include <iostream>
+#include <fstream>
 #include "format.h"
 #include "ncurses_display.h"
 #include "system.h"
@@ -23,24 +24,34 @@ std::string NCursesDisplay::ProgressBar(float percent) {
   }
 
   string display{to_string(percent * 100).substr(0, 4)};
+
   if (percent < 0.1 || percent == 1.0)
     display = " " + to_string(percent * 100).substr(0, 3);
+
   return result + " " + display + "/100%";
 }
 
+// NB. there are 2 processor util lines in the top window.
+// The 1st is the lifetiem utilisation
+// The second is the utilization WRT to the ncurses dispaly refresh rate,
+// which is ~instantaneous utilistion
+
 void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   int row{0};
+  std::vector<float> cpu_util = system.Cpu().Utilization();
+  float cpu_lifetime_util = cpu_util[0];
+  float cpu_current_util = cpu_util[1];
   mvwprintw(window, ++row, 2, ("OS: " + system.OperatingSystem()).c_str());
   mvwprintw(window, ++row, 2, ("Kernel: " + system.Kernel()).c_str());
   mvwprintw(window, ++row, 2, "Total CPU: ");
   wattron(window, COLOR_PAIR(1));
   mvwprintw(window, row, 12, "");
-  wprintw(window, ProgressBar(system.Cpu().Utilization().lifetime).c_str());
+  wprintw(window, ProgressBar(cpu_lifetime_util).c_str());
   wattroff(window, COLOR_PAIR(1));
   mvwprintw(window, ++row, 2, "Cur. CPU: ");
   wattron(window, COLOR_PAIR(1));
   mvwprintw(window, row, 12, "");
-  wprintw(window, ProgressBar(system.Cpu().Utilization().current).c_str());
+  wprintw(window, ProgressBar(cpu_current_util).c_str());
   wattroff(window, COLOR_PAIR(1));
   mvwprintw(window, ++row, 2, "Memory: ");
   wattron(window, COLOR_PAIR(1));
@@ -113,7 +124,7 @@ void NCursesDisplay::Display(System& system, int n) {
     refresh();
     werase(system_window);
     werase(process_window);
-    std::this_thread::sleep_for(std::chrono::seconds(1)); // NB. seconds = 3 -> same as htop 
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // NB. seconds = 3 -> same as htop. Utimately make runtime option 
   }
   endwin();
 }

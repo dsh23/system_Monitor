@@ -8,18 +8,17 @@ using std::string;
 #define HOUR (DAY / 24)
 #define MIN (HOUR / 60)
 
-// TODO: Complete this helper function
+
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
-// REMOVE: [[maybe_unused]] once you define the function
 string Format::ElapsedTime(long seconds, bool proc_win) {
 
   string ts_string;
   
   if(seconds < 0) {
-    ts_string = "Error";
+    ts_string = "Error"; // TODO: Implement better error control e.g try/catch
   } else if(seconds <= 59) {
-    ts_string = std::to_string(seconds) + "s";
+    ts_string = std::to_string(seconds) + "s"; 
   } else {
 
     long raw = seconds;
@@ -35,7 +34,7 @@ string Format::ElapsedTime(long seconds, bool proc_win) {
 
     int secs = raw;
    
-    if(proc_win) {
+    if(proc_win) { //always display seconds in the top window 
       ts_string = std::to_string(days) + "d:" + std::to_string(hours) + "h:" + std::to_string(mins) + "m";    
     }
     else {
