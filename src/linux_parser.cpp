@@ -1,4 +1,5 @@
-#include <dirent.h>
+//#include <dirent.h> replaced with std::filesystem
+#include <filesystem>
 #include <unistd.h>
 #include <string>
 #include <vector>
@@ -67,9 +68,26 @@ string LinuxParser::Kernel() {
   return current_kernel;
 }
 
-// BONUS: Update this to use std::filesystem
-// See separate branch for the alternative implementation
-vector<int> LinuxParser::Pids() {
+// Done/BONUS: Update this to use std::filesystem
+// See separate branch 1.0 for the old implementation
+
+vector<int> LinuxParser::Pids() { 
+  vector<int> pids;                                                                         
+  std::filesystem::path procdir = kProcDirectory;
+  for(auto& p : std::filesystem::directory_iterator(procdir)) {
+     std::string filename = p.path().stem().string(); 
+    if (std::all_of(filename.begin(), filename.end(), isdigit)) {
+      int pid = stoi(filename);                                                             
+        pids.push_back(pid);
+    }
+  }
+  return pids;
+}
+
+
+/* Begin old implementation
+
+  vector<int> LinuxParser::Pids() {
   vector<int> pids;
   DIR* directory = opendir(kProcDirectory.c_str());
   struct dirent* file;
@@ -87,7 +105,11 @@ vector<int> LinuxParser::Pids() {
   closedir(directory);
   return pids;
 }
+//End old implementation
+*/
 
+
+// Return total platform memory footprint
 int LinuxParser::TotalMem() {
   string line;
   string key;
